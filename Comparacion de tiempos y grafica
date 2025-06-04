@@ -1,7 +1,7 @@
 import numpy as np
 from time import time
-from memory_profiler import memory_usage
 import matplotlib.pyplot as plt
+
 
 T = 2 * np.pi
 t = np.linspace(0, T, 1000, endpoint=False)
@@ -9,7 +9,6 @@ f = np.sign(np.sin(t))  # Onda cuadrada
 
 def trapecio_integral(y, t):
     return np.trapz(y, t)
-
 
 def calcular_serie_fourier_iterativa(f, t, T, N):
     a0 = (2 / T) * trapecio_integral(f, t)
@@ -25,7 +24,6 @@ def calcular_serie_fourier_iterativa(f, t, T, N):
         bn.append(bn_n)
 
     return a0, an, bn
-
 
 def calcular_serie_fourier_recursiva(f, t, T, N):
     def coeficiente_rec(n):
@@ -51,20 +49,20 @@ Ns = [5, 10, 20, 50]
 tiempos_iter = []
 tiempos_recur = []
 
-print("Comparación de rendimiento (tiempo y memoria):")
+print("Comparación de rendimiento (tiempo en segundos):")
 for N in Ns:
- 
     t1 = time()
-    mem_iter = memory_usage((calcular_serie_fourier_iterativa, (f, t, T, N)), max_iterations=1)
+    calcular_serie_fourier_iterativa(f, t, T, N)
     t_iter = time() - t1
     tiempos_iter.append(t_iter)
 
     t2 = time()
-    mem_recur = memory_usage((calcular_serie_fourier_recursiva, (f, t, T, N)), max_iterations=1)
+    calcular_serie_fourier_recursiva(f, t, T, N)
     t_recur = time() - t2
     tiempos_recur.append(t_recur)
 
-    print(f"N={N:>2} | Iterativo: {t_iter:.6f} s, {max(mem_iter):.2f} MiB | Recursivo: {t_recur:.6f} s, {max(mem_recur):.2f} MiB")
+    print(f"N={N:>2} | Iterativo: {t_iter:.6f} s | Recursivo: {t_recur:.6f} s")
+    
 
 plt.plot(Ns, tiempos_iter, marker='o', label="Iterativo")
 plt.plot(Ns, tiempos_recur, marker='s', label="Recursivo")
