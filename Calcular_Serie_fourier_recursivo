@@ -1,0 +1,18 @@
+def calcular_serie_fourier_recursiva(f, t, T, N):
+    def coeficiente_rec(n):
+        if n == 0:
+            a0 = (2 / T) * trapecio_integral(f, t)
+            return [(a0, 0)]
+        else:
+            prev = coeficiente_rec(n - 1)
+            cos_term = np.cos(2 * np.pi * n * t / T)
+            sin_term = np.sin(2 * np.pi * n * t / T)
+            an_n = (2 / T) * trapecio_integral(f * cos_term, t)
+            bn_n = (2 / T) * trapecio_integral(f * sin_term, t)
+            return prev + [(an_n, bn_n)]
+
+    coef = coeficiente_rec(N)
+    a0 = coef[0][0]
+    an = [a for a, _ in coef[1:]]
+    bn = [b for _, b in coef[1:]]
+    return a0, an, bn
